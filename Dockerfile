@@ -2,6 +2,9 @@ FROM debian:jessie
 
 WORKDIR /tmp
 
+VOLUME /downloads
+VOLUME /config
+
 RUN groupadd -r rtorrent && useradd -r -g rtorrent rtorrent
 
 RUN apt-get update && apt-get install -y curl build-essential automake \
@@ -21,4 +24,8 @@ RUN curl -L http://downloads.sourceforge.net/project/xmlrpc-c/Xmlrpc-c%20Super%2
 RUN curl -L https://github.com/rakshasa/rtorrent/archive/0.9.6.tar.gz | tar -zx && \
     cd rtorrent-0.9.6 && \
     ./autogen.sh && ./configure --with-xmlrpc-c && make && make install && \
-    ldconfig
+    ldconfig && \
+    rm -rf /tmp/rtorrent-0.9.6
+
+RUN curl -L https://raw.githubusercontent.com/rakshasa/rtorrent/master/doc/rtorrent.rc --remote-name && \
+    mv rtorrent.rc /config/rtorrent.rc.default
