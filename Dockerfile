@@ -2,9 +2,9 @@ FROM debian:jessie
 
 WORKDIR /tmp
 
-RUN groupadd -r rtorrent && useradd -r -g rtorrent rtorrent
+RUN groupadd -r rtorrent && useradd -r -d /config -g rtorrent rtorrent
 
-RUN apt-get update && apt-get install -y curl build-essential automake \
+RUN apt-get update && apt-get install -y curl build-essential automake nginx \
     libtool libcppunit-dev libcurl3-dev libcurl3-openssl-dev libssl-dev libsigc++-2.0-dev `# libtorrent deps` \
     libncurses-dev `# rtorrent deps`
 
@@ -24,7 +24,11 @@ RUN curl -L https://github.com/rakshasa/rtorrent/archive/0.9.6.tar.gz | tar -zx 
     ldconfig && \
     rm -rf /tmp/rtorrent-0.9.6
 
+USER rtorrent
+
 VOLUME /downloads
 VOLUME /config
+
+EXPOSE 5000
 
 COPY rtorrent.rc.default /config/
