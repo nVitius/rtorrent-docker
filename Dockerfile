@@ -16,6 +16,8 @@ RUN curl -L https://github.com/rakshasa/libtorrent/archive/0.13.6.tar.gz | tar -
 RUN curl -L http://downloads.sourceforge.net/project/xmlrpc-c/Xmlrpc-c%20Super%20Stable/1.33.17/xmlrpc-c-1.33.17.tgz | tar -zx && \
     cd xmlrpc-c-1.33.17 && \
     ./configure --disable-cplusplus && make && make install && \
+    cd tools/xmlrpc && \
+    make && make install && \
     rm -rf /tmp/xmlrpc-c-1.33.17
 
 RUN curl -L https://github.com/rakshasa/rtorrent/archive/0.9.6.tar.gz | tar -zx && \
