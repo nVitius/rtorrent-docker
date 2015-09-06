@@ -2,9 +2,9 @@ FROM debian:jessie
 
 WORKDIR /tmp
 
-RUN groupadd -r rtorrent && useradd -r -d /config -g rtorrent rtorrent
+RUN usermod --home /config/ www-data
 
-RUN apt-get update && apt-get install -y curl build-essential automake nginx \
+RUN apt-get update && apt-get install -y curl build-essential automake supervisor nginx \
     libtool libcppunit-dev libcurl3-dev libcurl3-openssl-dev libssl-dev libsigc++-2.0-dev `# libtorrent deps` \
     libncurses-dev `# rtorrent deps`
 
@@ -26,13 +26,19 @@ RUN curl -L https://github.com/rakshasa/rtorrent/archive/0.9.6.tar.gz | tar -zx 
     ldconfig && \
     rm -rf /tmp/rtorrent-0.9.6
 
-USER rtorrent
+RUN rm /etc/nginx/sites-enabled/default && \
+    touch /tmp/scgi.socket && \
+    chmod 660 /tmp/scgi.socket && \
+    chown root:www-data /tmp/scgi.socket
 
 VOLUME /downloads
 VOLUME /config
 
-EXPOSE 5000
+EXPOSE 80
 
-COPY rtorrent.rc.default /config/
+COPY rtorrent.rc /config/
 COPY nginx.conf /etc/nginx/
-COPY rtorrent_xmlrpc.conf /etc/nginx/sites-available/
+COPY rtorrent_xmlrpc.conf /etc/nginx/sites-enabled/
+COPY supervisord.conf /etc/supervisor/conf.d/
+
+CMD ["supervisord"]
