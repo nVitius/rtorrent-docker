@@ -32,3 +32,5 @@ VOLUME /config
 EXPOSE 5000
 
 COPY rtorrent.rc.default /config/
+COPY nginx.conf /etc/nginx/
+COPY rtorrent_xmlrpc.conf /etc/nginx/sites-available/
