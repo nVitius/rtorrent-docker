@@ -29,7 +29,7 @@ RUN curl -L https://github.com/rakshasa/rtorrent/archive/0.9.6.tar.gz | tar -zx 
 RUN rm /etc/nginx/sites-enabled/default && \
     touch /tmp/scgi.socket && \
     chmod 660 /tmp/scgi.socket && \
-    chown root:www-data /tmp/scgi.socket
+    chown www-data:www-data /tmp/scgi.socket
 
 VOLUME /downloads
 VOLUME /config
@@ -41,4 +41,4 @@ COPY nginx.conf /etc/nginx/
 COPY rtorrent_xmlrpc.conf /etc/nginx/sites-enabled/
 COPY supervisord.conf /etc/supervisor/conf.d/
 
-CMD ["supervisord"]
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
